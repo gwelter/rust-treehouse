@@ -1,20 +1,40 @@
 use std::io::stdin;
 
 #[derive(Debug)]
+enum VisitorAction {
+    Accept,
+    AcceptWithNote { note: String },
+    Refuse,
+    Probation,
+}
+
+#[derive(Debug)]
 struct Visitor {
     name: String,
-    greeting: String,
+    age: u8,
+    action: VisitorAction,
 }
 
 impl Visitor {
-    fn new(name: &str, greeting: &str) -> Self {
+    fn new(name: &str, age: u8, action: VisitorAction) -> Self {
         Self {
             name: name.to_lowercase(),
-            greeting: greeting.to_string(),
+            age,
+            action,
         }
     }
     fn greet_visitor(&self) {
-        println!("{}", self.greeting);
+        match &self.action {
+            VisitorAction::Accept => println!("Welcome to the treehouse party, {}!", self.name),
+            VisitorAction::AcceptWithNote { note } => {
+                println!("{}", note);
+                if self.age < 21 {
+                    println!("Do not serve alcohol to {}", self.name);
+                }
+            }
+            VisitorAction::Probation => println!("{}, your request is under review.", self.name),
+            VisitorAction::Refuse => println!("Please leave.",),
+        }
     }
 }
 
@@ -26,8 +46,14 @@ fn what_is_your_name() -> String {
 
 fn main() {
     let mut visitors = vec![
-        Visitor::new("Bob", "Hello, Bob!"),
-        Visitor::new("Alice", "Hello, Alice!"),
+        Visitor::new("Bob", 18, VisitorAction::Accept),
+        Visitor::new(
+            "Alice",
+            21,
+            VisitorAction::AcceptWithNote {
+                note: "She likes cats".to_string(),
+            },
+        ),
     ];
     loop {
         println!("Hello, what's your name? (Leave empty and press ENTER to quit)");
@@ -44,7 +70,9 @@ fn main() {
                     break;
                 } else {
                     println!("Hello, {}! I don't think we've met before.", name);
-                    visitors.push(Visitor::new(&name, "New friend!"));
+                    let visitor = Visitor::new(&name, 18, VisitorAction::Probation);
+                    visitor.greet_visitor();
+                    visitors.push(visitor);
                 }
             }
         }
