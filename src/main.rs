@@ -1,5 +1,6 @@
 use std::io::stdin;
 
+#[derive(Debug)]
 struct Visitor {
     name: String,
     greeting: String,
@@ -24,7 +25,7 @@ fn what_is_your_name() -> String {
 }
 
 fn was_person_invited(name: &str) {
-    let visitors = [
+    let visitors = vec![
         Visitor::new("Bob", "Hello, Bob!"),
         Visitor::new("Alice", "Hello, Alice!"),
         Visitor::new("John", "Hello, John!"),
@@ -32,8 +33,11 @@ fn was_person_invited(name: &str) {
     ];
     let known_visitor = visitors.iter().find(|visitor| visitor.name == name);
     match known_visitor {
-        Some(visitor) => visitor.greet_visitor(),
-        None => println!("You are not invited!")
+        Some(visitor) => {
+            visitor.greet_visitor();
+            println!("{:#?}", visitor);
+        }
+        None => println!("You are not invited!"),
     }
 }
 
