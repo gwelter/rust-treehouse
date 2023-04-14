@@ -24,28 +24,29 @@ fn what_is_your_name() -> String {
     name.trim().to_lowercase()
 }
 
-fn was_person_invited(name: &str) {
-    let visitors = vec![
+fn main() {
+    let mut visitors = vec![
         Visitor::new("Bob", "Hello, Bob!"),
         Visitor::new("Alice", "Hello, Alice!"),
-        Visitor::new("John", "Hello, John!"),
-        Visitor::new("Jane", "Hello, Jane!"),
     ];
-    let known_visitor = visitors.iter().find(|visitor| visitor.name == name);
-    match known_visitor {
-        Some(visitor) => {
-            visitor.greet_visitor();
-            println!("{:#?}", visitor);
-        }
-        None => println!("You are not invited!"),
-    }
-}
+    loop {
+        println!("Hello, what's your name? (Leave empty and press ENTER to quit)");
+        let name = what_is_your_name();
 
-fn main() {
-    println!("Hello, what's your name?");
-    let name = what_is_your_name();
-    was_person_invited(&name);
-    let mut name2 = name;
-    name2.push_str(" is cool");
-    println!("{name2}");
+        let known_visitor = visitors.iter().find(|visitor| visitor.name == name);
+        match known_visitor {
+            Some(visitor) => {
+                visitor.greet_visitor();
+                println!("{:#?}", visitor);
+            }
+            None => {
+                if name.is_empty() {
+                    break;
+                } else {
+                    println!("Hello, {}! I don't think we've met before.", name);
+                    visitors.push(Visitor::new(&name, "New friend!"));
+                }
+            }
+        }
+    }
 }
