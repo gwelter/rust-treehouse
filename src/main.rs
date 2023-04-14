@@ -41,4 +41,7 @@ fn main() {
     println!("Hello, what's your name?");
     let name = what_is_your_name();
     was_person_invited(&name);
+    let mut name2 = name;
+    name2.push_str(" is cool");
+    println!("{name2}");
 }
